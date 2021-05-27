@@ -554,7 +554,7 @@ initialize_devices() {
     local rootfsdev="/dev/$ROOTFSDEVTYPE$ROOTFSDEVNUM"
     local part needprobe
 
-    if [ "$INSTALLTO" = "0 1" -a -s "@datadir@/tegra-sysinstall/partition_table" ]; then
+    if [ ! -z "$INSTALLTO" -a -s "@datadir@/tegra-sysinstall/partition_table" ]; then
 	echo "Re-partitioning the eMMC..."
 	repartition_gpt_device /dev/$ROOTFSDEVTYPE$ROOTFSDEVNUM "@datadir@/tegra-sysinstall/partition_table"
 	reprobe_rootfsdev
