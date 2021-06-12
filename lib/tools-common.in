@@ -832,3 +832,17 @@ set_url() {
     eval $varname="$value"
     return 0
 }
+
+## Setup partition_table file from the image if it exists
+setup_partition_file() {
+	rmount=$(mktemp -q -d /tmp/finalstaging.root.XXXXXX)
+	if ! mount "$first_targetdev" "$rmount" 2>/dev/null; then
+	echo "ERR: could not mount rootfs for pre-install operations" >&2
+	cleanup_and_exit 1
+	fi
+	if [ -f $rmount/usr/share/tegra-sysinstall/partition_table ]; then
+	echo "Note: Setting up partition_table file from the image"
+	cp $rmount/usr/share/tegra-sysinstall/parition_table /usr/share/tegra-sysinstall/partition_table
+	fi
+	umount $rmount
+}

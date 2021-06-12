@@ -75,6 +75,9 @@ set_url DATA_URL "$2" "file:///installer/data.tar.gz" optional || exit 1
 
 verify_device_availability || exit 1
 
+# Setup partition_table file from the image
+setup_partition_file
+
 if [ "$INITIAL_SETUP" = "yes" ]; then
     initialize_devices || exit 1
     format_partitions || exit 1
