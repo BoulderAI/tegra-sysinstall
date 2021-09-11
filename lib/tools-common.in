@@ -917,6 +917,8 @@ set_url() {
 #
 copy_installer_files() {
     local appartname="APP"
+    local appartnameb="APP_b"
+    local appartname2="APP_2"
     local rc=0
     if [ -z "${EMMC_PARTITIONS[APP]}" -a -n "${EMMC_PARTITIONS[crypt-APP]}" ]; then
 	appartname="crypt-APP"
@@ -931,6 +933,30 @@ copy_installer_files() {
 	umount "$tmpmnt"
     else
 	echo "No APP partition found for pre-loading installer files" >&2
+    fi
+    if -e /dev/disk/by-partlabel/$appartnameb; then
+	if mount /dev/disk/by-partlabel/$appartnameb $tmpmnt > /dev/null 2>&1; then
+	    if [ -d "$tmpmnt/installer" ]; then
+	        cp -v "$tmpmnt/installer/"* /installer/ || rc=1
+            else
+	        echo "No /installer directory on $appartname partition" >&2
+	    fi
+	    umount "$tmpmnt"
+        else
+	    echo "No APP partition found for pre-loading installer files" >&2
+        fi
+    fi
+    if -e /dev/disk/by-partlabel/$appartname2; then
+	if mount /dev/disk/by-partlabel/$appartname2 $tmpmnt > /dev/null 2>&1; then
+	    if [ -d "$tmpmnt/installer" ]; then
+	        cp -v "$tmpmnt/installer/"* /installer/ || rc=1
+            else
+	        echo "No /installer directory on $appartname partition" >&2
+	    fi
+	    umount "$tmpmnt"
+        else
+	    echo "No APP partition found for pre-loading installer files" >&2
+        fi
     fi
     rmdir "$tmpmnt" || rc=1
     return $rc
